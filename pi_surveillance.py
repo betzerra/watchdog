@@ -5,6 +5,7 @@
 from pyimagesearch.tempimage import TempImage
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+from subprocess import call
 import argparse
 import warnings
 import datetime
@@ -111,7 +112,8 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
 					path = "{base_path}/{timestamp}.jpg".format(
 						base_path=conf["dropbox_base_path"], timestamp=ts)
 
-					print "~/Coding/Dropbox-Uploader/dropbox_uploader.sh upload {0} {1}".format(t.path,path)
+					print "~/Coding/Dropbox-Uploader/dropbox_uploader.sh upload '{0}' '{1}'".format(t.path,path)
+					call(["~/Coding/Dropbox-Uploader/dropbox_uploader.sh", "upload", t.path, path])
 					t.cleanup()
 
 				# update the last uploaded timestamp and reset the motion
