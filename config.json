@@ -1,5 +1,5 @@
 {
-	"show_video": true,
+	"show_video": false,
 	"use_dropbox": true,
 	"dropbox_key": "83aqc3ft2an7aop",
 	"dropbox_secret": "t1ivfpyzrsvqqs3",
