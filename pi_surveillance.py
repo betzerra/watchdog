@@ -3,8 +3,6 @@
 
 # import the necessary packages
 from pyimagesearch.tempimage import TempImage
-from dropbox.client import DropboxOAuth2FlowNoRedirect
-from dropbox.client import DropboxClient
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import argparse
@@ -19,34 +17,10 @@ import cv2
 ap = argparse.ArgumentParser()
 ap.add_argument("-c", "--conf", required=True,
 	help="path to the JSON configuration file")
-
-ap.add_argument("-a", "--auth", required=False,
-        help="Dropbox Auth Token")
-
 args = vars(ap.parse_args())
 
-# filter warnings, load the configuration and initialize the Dropbox
-# client
 warnings.filterwarnings("ignore")
 conf = json.load(open(args["conf"]))
-client = None
-
-# check to see if the Dropbox should be used
-if conf["use_dropbox"]:
-	# connect to dropbox and start the session authorization process
-	flow = DropboxOAuth2FlowNoRedirect(conf["dropbox_key"], conf["dropbox_secret"])
-	print "[INFO] Authorize this application: {}".format(flow.start())
-	
-	if args['auth']:
-		authCode = args['auth']
-	else:
-		authCode = raw_input("Enter auth code here: ").strip()
-
-	print "Using '{}' as AuthCode".format(authCode)
-	# finish the authorization and grab the Dropbox client
-	(accessToken, userID) = flow.finish(authCode)
-	client = DropboxClient(accessToken)
-	print "[SUCCESS] dropbox account linked"
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
@@ -126,6 +100,7 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
 			# high enough
 			if motionCounter >= conf["min_motion_frames"]:
 				# check to see if dropbox sohuld be used
+				
 				if conf["use_dropbox"]:
 					# write the image to temporary file
 					t = TempImage()
@@ -135,7 +110,7 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
 					print "[UPLOAD] {}".format(ts)
 					path = "{base_path}/{timestamp}.jpg".format(
 						base_path=conf["dropbox_base_path"], timestamp=ts)
-					client.put_file(path, open(t.path, "rb"))
+					print "{}".format(path)
 					t.cleanup()
 
 				# update the last uploaded timestamp and reset the motion
