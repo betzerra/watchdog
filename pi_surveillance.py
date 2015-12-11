@@ -107,10 +107,11 @@ for f in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True
 					cv2.imwrite(t.path, frame)
 
 					# upload the image to Dropbox and cleanup the tempory image
-					print "[UPLOAD] {}".format(ts)
+					# print "[UPLOAD] {}".format(ts)
 					path = "{base_path}/{timestamp}.jpg".format(
 						base_path=conf["dropbox_base_path"], timestamp=ts)
-					print "{}".format(path)
+
+					print "~/Coding/Dropbox-Uploader/dropbox_uploader.sh upload {0} {1}".format(t.path,path)
 					t.cleanup()
 
 				# update the last uploaded timestamp and reset the motion
